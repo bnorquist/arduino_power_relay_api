@@ -1,0 +1,75 @@
+unsigned long serialdata;
+int inbyte;
+int digitalState;
+int pinNumber;
+int analogRate;
+
+void setup()
+{
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  getSerial();
+  switch(serialdata)
+  {
+  case 1:
+    {
+      //analog digital write
+      getSerial();
+      switch (serialdata)
+      {
+      case 1:
+        {
+          //analog write
+          getSerial();
+          pinNumber = serialdata;
+          getSerial();
+          analogRate = serialdata;
+          pinMode(pinNumber, OUTPUT);
+          analogWrite(pinNumber, analogRate);
+          pinNumber = 0;
+          break;
+        }
+      case 2:
+        {
+          //digital write
+          getSerial();
+          pinNumber = serialdata;
+          getSerial();
+          digitalState = serialdata;
+          pinMode(pinNumber, OUTPUT);
+          if (digitalState == 0)
+          {
+            digitalWrite(pinNumber, LOW);
+          }
+          if (digitalState == 1)
+          {
+            digitalWrite(pinNumber, HIGH);
+          }
+          pinNumber = 0;
+          break;
+
+        }
+     }
+     break;
+   }
+  }
+}
+
+long getSerial()
+{
+  serialdata = 0;
+  while (inbyte != '/')
+  {
+    inbyte = Serial.read();
+    if (inbyte > 0 && inbyte != '/')
+    {
+
+      serialdata = serialdata * 10 + inbyte - '0';
+    }
+  }
+  inbyte = 0;
+  return serialdata;
+}
